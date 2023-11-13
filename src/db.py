@@ -21,6 +21,45 @@ def create_table(conn, create_table_sql):
         print(e)
 
 
+def add_task(conn, task):
+    """Create a new task."""
+    sql = ''' INSERT INTO tasks(title, description, deadline, priority, status)
+              VALUES(?,?,?,?,?) '''
+    cur = conn.cursor()
+    cur.execute(sql, task)
+    conn.commit()
+    return cur.lastrowid
+
+
+def update_task(conn, task):
+    """Update an existing task."""
+    sql = ''' UPDATE tasks
+              SET title = ?,
+                  description = ?,
+                  deadline = ?,
+                  priority = ?,
+                  status = ?
+              WHERE id = ?'''
+    cur = conn.cursor()
+    cur.execute(sql, task)
+    conn.commit()
+
+
+def delete_task(conn, id):
+    """Delete a task by task id."""
+    sql = 'DELETE FROM tasks WHERE id=?'
+    cur = conn.cursor()
+    cur.execute(sql, (id,))
+    conn.commit()
+
+
+def get_all_tasks(conn):
+    """Query all rows in the tasks table."""
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM tasks")
+    return cur.fetchall()
+
+
 def main():
     database = "tasks.db"
 
